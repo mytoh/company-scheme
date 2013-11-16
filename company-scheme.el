@@ -116,7 +116,7 @@
                  check-substring-spec substring-spec-ok? make-kmp-restart-vector
                  kmp-step string-kmp-partial-search string? make-string string
                  string->list list->string string-join string-length string-ref
-                 string-copy string-set! string-fill! string-append)))
+                 string-copy string-set! string-fill! string-append))
 
 (defvar company-scheme-keywords-alist
   ;; Please contribute corrections or additions.
