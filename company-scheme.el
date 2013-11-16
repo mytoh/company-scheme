@@ -118,6 +118,21 @@
                  string->list list->string string-join string-length string-ref
                  string-copy string-set! string-fill! string-append))
 
+(defvar company-scheme-keyword-srfi-106
+  '(make-client-socket make-server-socket call-with-socket
+                       socket-input-port socket-output-port
+                       socket-merge-flags socket-purge-flags
+                       socket-accept socket-send socket-recv socket-shutdown socket-close
+                       *af-unspec* *af-inet* *af-inet6*
+                       *sock-stream* *sock-dgram*
+                       *ai-canonname* *ai-numerichost*
+                       *ai-v4mapped* *ai-all* *ai-addrconfig*
+                       *ipproto-ip* *ipproto-tcp* *ipproto-udp*
+                       *msg-none* *msg-peek* *msg-oob* *msg-waitall*
+                       *shut-rd* *shut-wr* *shut-rdwr*
+                       address-family socket-domain address-info
+                       ip-protocol message-type shutdown-method))
+
 (defvar company-scheme-keywords-alist
   ;; Please contribute corrections or additions.
   `((scheme-mode
@@ -125,7 +140,8 @@
                   (append
                    company-scheme-keyword-r7rs
                    company-scheme-keyword-srfi-1
-                   company-scheme-keyword-srfi-13))))
+                   company-scheme-keyword-srfi-13
+                   company-scheme-keyword-srfi-106))))
   "Alist mapping major-modes to sorted keywords for `company-scheme'.")
 
 ;;;###autoload
