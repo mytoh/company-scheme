@@ -159,6 +159,7 @@
        (all-completions arg (if (consp symbols)
                                 symbols
                               (cdr (assq symbols company-scheme-keywords-alist))))))
+    (meta (format "This value is named %s" arg))
     (sorted t)))
 
 (provide 'company-scheme)
