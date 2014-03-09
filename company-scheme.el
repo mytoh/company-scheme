@@ -46,6 +46,7 @@
       define
       define-record-type define-syntax
       define-values
+      define-library
       denominator do
       dynamic-wind else eof-object?  equal?  error error-object-message
       even?  exact-integer-sqrt exact?  features floor floor-remainder
