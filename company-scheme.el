@@ -31,49 +31,45 @@
 (require 'company-scheme-keyword-r7rs "company-scheme/keyword/r7rs")
 (require 'company-scheme-keyword-srfi-1 "company-scheme/keyword/srfi-1")
 
-(cl-defun company-keywords-upper-lower (&rest lst)
-  ;; Upcase order is different for _.
-  (nconc (cl-sort (cl-mapcar 'upcase lst) #'string<) lst))
-
 (defvar company-scheme-keyword-srfi-13
   '(string-null? string-every string-any string-tabulate reverse-list->string
-                 substring/shared string-copy! string-take string-take-right
-                 string-drop string-drop-right string-pad string-pad-right string-trim
-                 string-trim-right string-trim-both string-compare string-compare-ci
-                 string= string<> string< string> string<= string>= string-ci=
-                 string-ci<> string-ci< string-ci> string-ci<= string-ci>=
-                 string-hash string-hash-ci string-prefix-length string-suffix-length
-                 string-prefix-length-ci string-suffix-length-ci string-prefix?
-                 string-suffix? string-prefix-ci? string-suffix-ci? string-index
-                 string-index-right string-skip string-skip-right string-count
-                 string-contains string-contains-ci string-titlecase
-                 string-titlecase! string-upcase string-upcase! string-downcase
-                 string-downcase! string-reverse string-reverse! string-concatenate
-                 string-append/shared string-concatenate/shared string-concatenate-reverse
-                 string-concatenate-reverse/shared string-map string-map!
-                 string-fold string-fold-right string-unfold string-unfold-right
-                 string-for-each string-for-each-index xsubstring string-xcopy!
-                 string-replace string-tokenize string-filter string-delete
-                 string-parse-start+end string-parse-final-start+end let-string-start+end
-                 check-substring-spec substring-spec-ok? make-kmp-restart-vector
-                 kmp-step string-kmp-partial-search string? make-string string
-                 string->list list->string string-join string-length string-ref
-                 string-copy string-set! string-fill! string-append))
+    substring/shared string-copy! string-take string-take-right
+    string-drop string-drop-right string-pad string-pad-right string-trim
+    string-trim-right string-trim-both string-compare string-compare-ci
+    string= string<> string< string> string<= string>= string-ci=
+    string-ci<> string-ci< string-ci> string-ci<= string-ci>=
+    string-hash string-hash-ci string-prefix-length string-suffix-length
+    string-prefix-length-ci string-suffix-length-ci string-prefix?
+    string-suffix? string-prefix-ci? string-suffix-ci? string-index
+    string-index-right string-skip string-skip-right string-count
+    string-contains string-contains-ci string-titlecase
+    string-titlecase! string-upcase string-upcase! string-downcase
+    string-downcase! string-reverse string-reverse! string-concatenate
+    string-append/shared string-concatenate/shared string-concatenate-reverse
+    string-concatenate-reverse/shared string-map string-map!
+    string-fold string-fold-right string-unfold string-unfold-right
+    string-for-each string-for-each-index xsubstring string-xcopy!
+    string-replace string-tokenize string-filter string-delete
+    string-parse-start+end string-parse-final-start+end let-string-start+end
+    check-substring-spec substring-spec-ok? make-kmp-restart-vector
+    kmp-step string-kmp-partial-search string? make-string string
+    string->list list->string string-join string-length string-ref
+    string-copy string-set! string-fill! string-append))
 
 (defvar company-scheme-keyword-srfi-106
   '(make-client-socket make-server-socket call-with-socket
-                       socket-input-port socket-output-port
-                       socket-merge-flags socket-purge-flags
-                       socket-accept socket-send socket-recv socket-shutdown socket-close
-                       *af-unspec* *af-inet* *af-inet6*
-                       *sock-stream* *sock-dgram*
-                       *ai-canonname* *ai-numerichost*
-                       *ai-v4mapped* *ai-all* *ai-addrconfig*
-                       *ipproto-ip* *ipproto-tcp* *ipproto-udp*
-                       *msg-none* *msg-peek* *msg-oob* *msg-waitall*
-                       *shut-rd* *shut-wr* *shut-rdwr*
-                       address-family socket-domain address-info
-                       ip-protocol message-type shutdown-method))
+    socket-input-port socket-output-port
+    socket-merge-flags socket-purge-flags
+    socket-accept socket-send socket-recv socket-shutdown socket-close
+    *af-unspec* *af-inet* *af-inet6*
+    *sock-stream* *sock-dgram*
+    *ai-canonname* *ai-numerichost*
+    *ai-v4mapped* *ai-all* *ai-addrconfig*
+    *ipproto-ip* *ipproto-tcp* *ipproto-udp*
+    *msg-none* *msg-peek* *msg-oob* *msg-waitall*
+    *shut-rd* *shut-wr* *shut-rdwr*
+    address-family socket-domain address-info
+    ip-protocol message-type shutdown-method))
 
 (defvar company-scheme-keywords-alist
   ;; Please contribute corrections or additions.
@@ -83,8 +79,16 @@
                    company-scheme-keyword-r7rs
                    company-scheme-keyword-srfi-1
                    company-scheme-keyword-srfi-13
-                   company-scheme-keyword-srfi-106))))
+                   company-scheme-keyword-srfi-106))
+     ))
   "Alist mapping major-modes to sorted keywords for `company-scheme'.")
+
+(cl-defun company-scheme-candidates (prefix)
+  (let ((completion-ignore-case nil)
+        (symbols (cdr (assq major-mode company-scheme-keywords-alist))))
+    (if symbols
+        (all-completions prefix symbols)
+      nil)))
 
 ;;;###autoload
 (cl-defun company-scheme (command &optional arg &rest ignored)
@@ -96,13 +100,9 @@
                  (not (company-in-string-or-comment))
                  (or (company-grab-symbol) 'stop)))
     (candidates
-     (let ((completion-ignore-case nil)
-           (symbols (cdr (assq major-mode company-scheme-keywords-alist))))
-       (all-completions arg (if (consp symbols)
-                                symbols
-                              (cdr (assq symbols company-scheme-keywords-alist))))))
+     (company-scheme-candidates arg))
     (meta (format "This value is named %s" arg))
-    (sorted t)))
+    ))
 
 (provide 'company-scheme)
 ;;; company-scheme.el ends here
