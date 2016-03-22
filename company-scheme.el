@@ -71,38 +71,30 @@
     address-family socket-domain address-info
     ip-protocol message-type shutdown-method))
 
-(defvar company-scheme-keywords-alist
-  ;; Please contribute corrections or additions.
-  `((scheme-mode
-     ,@(cl-mapcar #'symbol-name
-                  (append
-                   company-scheme-keyword-r7rs
-                   company-scheme-keyword-srfi-1
-                   company-scheme-keyword-srfi-13
-                   company-scheme-keyword-srfi-106))
-     ))
-  "Alist mapping major-modes to sorted keywords for `company-scheme'.")
+(defvar company-scheme-keywords-list
+  (cl-mapcar #'symbol-name
+             (append
+              company-scheme-keyword-r7rs
+              company-scheme-keyword-srfi-1
+              company-scheme-keyword-srfi-13
+              company-scheme-keyword-srfi-106)))
 
 (cl-defun company-scheme-candidates (prefix)
   (let ((completion-ignore-case nil)
-        (symbols (cdr (assq major-mode company-scheme-keywords-alist))))
-    (if symbols
-        (all-completions prefix symbols)
-      nil)))
+        (symbols company-scheme-keywords-list))
+    (all-completions prefix symbols)))
 
 ;;;###autoload
-(cl-defun company-scheme (command &optional arg &rest ignored)
+(cl-defun company-scheme-backend (command &optional arg &rest ignored)
   "`company-mode' back-end for programming language keywords."
   (interactive (list 'interactive))
-  (cl-case command
-    (interactive (company-begin-backend 'company-scheme))
-    (prefix (and (assq major-mode company-scheme-keywords-alist)
-                 (not (company-in-string-or-comment))
-                 (or (company-grab-symbol) 'stop)))
-    (candidates
+  (pcase command
+    (`interactive (company-begin-backend 'company-scheme-backend))
+    (`prefix (and (eq  major-mode 'scheme-mode)
+                  (company-grab-symbol)))
+    (`candidates
      (company-scheme-candidates arg))
-    (meta (format "This value is named %s" arg))
-    ))
+    (`meta (format "This value is named %s" arg))))
 
 (provide 'company-scheme)
 ;;; company-scheme.el ends here
